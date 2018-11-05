@@ -46,12 +46,12 @@ func TestImpl(t *testing.T) {
 			gen:   "./cmd/benchmarks/proto/generator/generator",
 			pross: "./cmd/benchmarks/proto/processor/processor",
 		}, {
-			Name:  "UNIX",
+			Name:  "UNIX SOCKETS",
 			gen:   "./cmd/benchmarks/unix/generator/generator",
 			pross: "./cmd/benchmarks/unix/processor/processor",
 		},
 		{
-			Name:  "PIPES",
+			Name:  "UNIX PIPES",
 			gen:   "./cmd/benchmarks/pipes/generator/generator",
 			pross: "./cmd/benchmarks/pipes/processor/processor",
 		},

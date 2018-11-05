@@ -10,7 +10,7 @@ I used following and go into further detail on to why I made those decisions bel
 4. Docker for easy deployment and testing
 
 
-### quick start
+### Quick Start
 
 1. make sure you have docker on your machine
 2. make sure you have docker-compose on your machine 
@@ -39,7 +39,7 @@ time count_confidence count_id count_norm_pos_x count_norm_pos_y count_pupil_dia
 ```
 
 
-### Not Quickstart
+### Not Quick Start
 
 If you want to compile everything you'll need a fair amount of things.
 
@@ -106,19 +106,20 @@ They all clocked in around the same time so I decided to go with GRPC since its 
 
 For all methods I was using protobuf as the encoding layer.
 
-
-
 You can also run the benchmark tests as well 
 ```
-~/Code/golang/src/github.com/Nearhan/mindx master
 ❯ go test -v
 === RUN   TestImpl
 --- PASS: TestImpl (0.11s)
-    benchmarks_test.go:62: GRPC took 36.696675ms
-    benchmarks_test.go:62: UNIX took 38.101747ms
-    benchmarks_test.go:62: PIPES took 36.494892ms
-ok      github.com/Nearhan/mindx        0.124s
-
+    benchmarks_test.go:62: GRPC took 36.440859ms
+    benchmarks_test.go:62: UNIX SOCKETS took 35.151095ms
+    benchmarks_test.go:62: UNIX PIPES took 35.69541ms
+=== RUN   TestConvertDpInfluxPoint
+--- PASS: TestConvertDpInfluxPoint (0.00s)
+=== RUN   TestCreateNewBatchPoints
+--- PASS: TestCreateNewBatchPoints (0.00s)
+PASS
+ok      github.com/Nearhan/mindx        0.120s
 ```
 
 ### Integration Tests
