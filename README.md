@@ -1,5 +1,15 @@
 # mindx code challenge
 
+Here is my implementation of the code challenge.
+
+I used following and go into further detail on to why I made those decisions below:
+
+1. Go as the programing langauge
+2. GRPC + Protobuf for IPC layer 
+3. INFLUXDB as backing store
+4. Docker for easy deployment and testing
+
+
 ### quick start
 
 1. make sure you have docker on your machine
@@ -34,7 +44,7 @@ time count_confidence count_id count_norm_pos_x count_norm_pos_y count_pupil_dia
 If you want to compile everything you'll need a fair amount of things.
 
 1. Install GO https://golang.org/doc/install
-2. Install Protobuff and GRPC https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1
+2. Install Protobuf and GRPC https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1
 3. Install dep
     ```
     brew install dep
@@ -52,26 +62,31 @@ If you want to compile everything you'll need a fair amount of things.
     ./build.sh
     ```
     this compiles the protobuf files, compiles the binaries and creates docker images 
-
-7. Run it all
+7. Test stuff!
+    ```
+    go test -v 
+    ```
+8. Run it all
    ```
    docker-compose -f docker-compose-local.yml up
    ```
 
 
-
+## Considerations
 
 ### InfluxDB
 
-I decided to go with influxdb as the backing store.
-Why?
 Influxdb is a time series database, has a udp protocol and can store timestamps as IDS!
-It also allows you to query for datapoints with a sql like query lanague.
+It allows for batch inserting and is distributed from the start. 
+It also allows for you to query for data points with a sql like language.
 
 ### Inserter Interface
 
-I used an interface for how I store data points so that I swap this out whenever I watned.
-Currently It has two methods, and I implemented an influxdb udp variant
+I used an interface for how I store data points so that I swap this out whenever I wanted.
+For instance if I wanted to switch to using a postgres database I would just have a postgres implementation
+of this interface.
+
+Currently It has two methods, for this challenge I created a influxdb udp inserter
 
 ```
 // Inserter handles how we store and insert data points
@@ -79,15 +94,21 @@ type Inserter interface {
 	Insert(*proto.DataPoint) error
 	InsertBatch(*proto.DataPoint) error
 }
-````
+```
 
 
-### BenchMark tests
+### IPC && BenchMark tests
 
-I was curious to try various IPC modes to test which one was faster.
+I was curious to try various IPC methods to test which one was faster.
 Each test uses a different IPC protocol and sends 10k messages for processing.
-They all clocked in around the same time so I decided to go with GRPC  + Protobuf since its modern, portable and 
-allows for a very flexible API (you can keep adding fields and you don't need to do a schema change)
+They all clocked in around the same time so I decided to go with GRPC since its modern, portable and allows for a very flexible API (Easy Bi Directional Streaming).
+
+
+For all methods I was using protobuf as the encoding layer.
+
+
+
+You can also run the benchmark tests as well 
 ```
 ~/Code/golang/src/github.com/Nearhan/mindx master
 ❯ go test -v
@@ -98,8 +119,6 @@ allows for a very flexible API (you can keep adding fields and you don't need to
     benchmarks_test.go:62: PIPES took 36.494892ms
 ok      github.com/Nearhan/mindx        0.124s
 
-~/Code/golang/src/github.com/Nearhan/mindx master
-❯
 ```
 
 ### Integration Tests
