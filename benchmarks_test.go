@@ -13,8 +13,8 @@ func runImpl(gen, proc string) time.Duration {
 
 	stat := time.Now()
 
-	cmd1 := exec.Command("./cmd/benchmarks/proto/processor/processor")
-	cmd2 := exec.Command("./cmd/benchmarks/proto/generator/generator")
+	cmd1 := exec.Command(proc)
+	cmd2 := exec.Command(gen)
 
 	go func(c chan bool) {
 		cmd1.Run()
@@ -45,7 +45,8 @@ func TestImpl(t *testing.T) {
 			Name:  "GRPC",
 			gen:   "./cmd/benchmarks/proto/generator/generator",
 			pross: "./cmd/benchmarks/proto/processor/processor",
-		}, {
+		},
+		{
 			Name:  "UNIX SOCKETS",
 			gen:   "./cmd/benchmarks/unix/generator/generator",
 			pross: "./cmd/benchmarks/unix/processor/processor",
